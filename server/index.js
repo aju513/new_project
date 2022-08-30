@@ -12,20 +12,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/api", (req, res) => {
+  console.log(file);
   res.send(file);
 });
 app.post("/api", (req, res) => {
-  console.log(req.body);
-  if (req.body[1].lastname) {
-    file[1].lastname = req.body[1].lastname;
-  }
-  if (req.body[0].firstname) {
-    file[0].firstname = req.body[0].firstname;
-  }
-  if (req.body[2].telephone) {
-    file[2].telephone = req.body[2].telephone;
-  }
-  console.log(file);
+  const request = req.body;
+
+  request.forEach((element, i) => {
+    file[i].value = element.value;
+  });
   fs.writeFile(fileName, JSON.stringify(file), function writeJSON(err) {
     if (err) return console.log(err);
   });

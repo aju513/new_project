@@ -1,19 +1,29 @@
 import React from "react";
 
-const InputField = ({ value, type, handleChange, name }) => {
+const InputField = ({
+  label,
+  value,
+  type,
+  handleChange,
+  name,
+  error,
+  setError,
+}) => {
   return (
     <>
-      <input
-        style={{
-          margin: "1.2em",
-        }}
-        value={value}
-        type={type}
-        onChange={(e) => {
-          e.preventDefault();
-          handleChange && handleChange(e.target.value, name);
-        }}
-      />
+      <div style={{ margin: "4px", marginLeft: "20px", marginBottom: "20px" }}>
+        <p style={{ color: "red", fontSize: "11px" }}>{error && error.err}</p>
+        <h4>{label}</h4>
+        <input
+          defaultValue={value}
+          type={type}
+          onChange={(e) => {
+            e.preventDefault();
+            setError({ err: "", name: "" });
+            handleChange && handleChange(e.target.value, name);
+          }}
+        />
+      </div>
     </>
   );
 };

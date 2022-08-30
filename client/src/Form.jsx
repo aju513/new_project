@@ -6,34 +6,57 @@ import InputField from "./InputField";
 axios.withCredentials = true;
 const Form = () => {
   const [state, setState] = useState(dataJson);
-  console.log(state);
+  const [error, setError] = useState({ err: "", name: "" });
+
   const handleChange = (data, type) => {
     var obj = state;
 
     obj.forEach((element) => {
-      if (type[0] === Object.keys(element)[0]) {
-        element[type[0]] = data;
+      if (element.name === type) {
+        element.value = data;
       }
     });
-    axios.post("http://localhost:8000/api", obj, { withCredentials: true });
+    console.log(obj);
     axios.get("http://localhost:8000/api").then((res) => setState(res.data));
+    axios.post("http://localhost:8000/api", obj, { withCredentials: true });
+  };
+  const validate = (e) => {
+    e.preventDefault();
+    state.forEach((element) => {
+      if (element.value.length === 0) {
+        const value = ` ${element.name} is empty`;
+        setError({ err: value, name: element.name });
+      } else if (element.value.length < 4) {
+        const value = `${element.name} length is less than 4`;
+        setError({
+          err: value,
+          name: element.name,
+        });
+      }
+    });
   };
   return (
     <>
       <form
+        onSubmit={(e) => validate(e)}
         style={{
           display: "flex",
           flexDirection: "column",
           width: "20%",
           margin: "1.2em",
+          border: "solid black ",
+          borderRadius: "4px",
         }}
       >
         {state.map((e) => (
           <InputField
-            type="text"
-            value={Object.values(e)}
+            type={e.type}
+            value={e.value}
             handleChange={handleChange}
-            name={Object.keys(e)}
+            name={e.name}
+            setError={setError}
+            label={e.name}
+            error={error.name === e.name && error}
           />
         ))}
         <InputField type="submit" value="submit" />
